@@ -90,3 +90,5 @@ Assets/Rewired/Internal/Libraries/Runtime/Native/WindowsStandalone.meta
 Assets/Rewired/Internal/Libraries/Runtime/Native/WindowsStandalone/x64.meta
 Assets/Rewired/Internal/Libraries/Runtime/Native/WindowsStandalone/x86.meta
 /.config
+.idea/*
+.vscode/*
