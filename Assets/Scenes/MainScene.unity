@@ -122,6 +122,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &1743378
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1743379}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1743379
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1743378}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -11.1, y: 4, z: -9.7}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &170773156
 GameObject:
   m_ObjectHideFlags: 0
@@ -227,6 +258,7 @@ GameObject:
   - component: {fileID: 270415605}
   - component: {fileID: 270415604}
   - component: {fileID: 270415603}
+  - component: {fileID: 270415608}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -244,7 +276,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 11.56
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -344,6 +376,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &270415608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 270415602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bcc50b2e64d133b09ae40b95211df3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  paceDelay: 2.13
+  areaCorners:
+  - {x: 20, y: 4, z: -45}
+  - {x: 20, y: 4, z: -10}
+  - {x: 45, y: 4, z: -10}
+  - {x: 45, y: 4, z: -45}
 --- !u!1 &868877161
 GameObject:
   m_ObjectHideFlags: 0
@@ -606,7 +656,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agents:
-  - {fileID: 270415603}
+  - agent: {fileID: 270415603}
+    behaviorTree: {fileID: 270415608}
   areaCorners:
   - {x: 20, y: 4, z: -45}
   - {x: 20, y: 4, z: -10}
@@ -636,3 +687,4 @@ SceneRoots:
   - {fileID: 1074890081}
   - {fileID: 270415607}
   - {fileID: 1869472038}
+  - {fileID: 1743379}
