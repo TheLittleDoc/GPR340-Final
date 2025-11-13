@@ -26,6 +26,13 @@ namespace BehaviorTrees
                     }
                     case NodeState.Success:
                     {
+                        //check if child was last in sequence
+                        if (children.IndexOf(child) == children.Count - 1)
+                        {
+                            nodeState = NodeState.Success;
+                            return NodeState.Success;
+                        }
+
                         continue;
                     }
                     case NodeState.Running:
