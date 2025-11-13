@@ -15,8 +15,6 @@ namespace BehaviorTrees
 
         public override NodeState Evaluate()
         {
-            if(nodeState == NodeState.Ready)
-                nodeState = NodeState.Running;
             switch (action())
             {
                 case NodeState.Failure:
