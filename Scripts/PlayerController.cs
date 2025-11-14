@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class PlayerController : MonoBehaviour
 {
 
-    public float movementSpeed = 5.0f;
+    public float movementSpeed = 1.0f;
 
     void Start()
     {
@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.W))
         {
-            transform.position += Vector3.forward * Time.deltaTime * movementSpeed;
+            rigidbody.position += Vector3.forward * Time.deltaTime * movementSpeed;
         }
         else if (Input.GetKey(KeyCode.S))
         {
@@ -33,6 +33,10 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetKey(KeyCode.D))
         {
             rigidbody.position += Vector3.right * Time.deltaTime * movementSpeed;
+        }
+        else if (Input.GetKey(KeyCode.Space))
+        {
+            rigidbody.position += Vector3.
         }
     }
 }
