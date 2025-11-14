@@ -14,8 +14,12 @@ public class EnemyTree : BehaviorTree
     private double waitingTime = 3.0;
     private ActionNode paceNode;
     private ActionNode waitNode;
+    private ActionNode searchNode;
     private int currentCorner = 0;
+    private Sequence paceSequence;
+    private Sequence foundSequence;
     [SerializeField] private List<Vector3> areaCorners; 
+    GameObject player;
 
 
     public void Start()
@@ -25,11 +29,17 @@ public class EnemyTree : BehaviorTree
         paceNode = new ActionNode(pace);
         ActionNode.ActionNodeDelegate wait = WaitToPace;
         waitNode = new ActionNode(wait);
+        ActionNode.ActionNodeDelegate search = CheckForPlayer;
+        searchNode = new ActionNode(search);
         List<Node> nodes = new List<Node>();
         nodes.Add(paceNode);
         nodes.Add(waitNode);
-        rootNode = new Sequence(nodes);
+        nodes.Add(searchNode);
+        paceSequence = new Sequence(nodes);
+        rootNode = paceSequence;
+        
         Ready();
+        player = GameObject.FindGameObjectWithTag("Player");
     }
 
     private Node.NodeState WaitToPace()
@@ -46,6 +56,15 @@ public class EnemyTree : BehaviorTree
         
     }
 
+    private Node.NodeState CheckForPlayer()
+    {   
+        double distance = Vector3.Distance(player.transform.position, transform.position);
+        if(distance < 20)
+            return Node.NodeState.Failure;
+        return Node.NodeState.Success;
+    }
+
+
     // Start is called before the first frame update
     public void FixedUpdate()
     {
@@ -58,6 +77,8 @@ public class EnemyTree : BehaviorTree
                 break;
             case Node.NodeState.Failure:
                 Debug.Log("Failure");
+                MeshRenderer renderer = GetComponent<MeshRenderer>();
+                renderer.material.color = Color.red;
                 break;
             case Node.NodeState.Running:
                 Debug.Log("Running");
