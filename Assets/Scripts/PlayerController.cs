@@ -34,9 +34,9 @@ public class PlayerController : MonoBehaviour
         {
             rigidbody.position += Vector3.right * Time.deltaTime * movementSpeed;
         }
-        else if (Input.GetKey(KeyCode.Space))
-        {
-            rigidbody.position += Vector3.
-        }
+        // else if (Input.GetKey(KeyCode.Space))
+        // {
+        //     rigidbody.position += Vector3.
+        // }
     }
 }
