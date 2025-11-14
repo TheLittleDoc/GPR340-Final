@@ -72,29 +72,29 @@ public class EnemyTree : BehaviorTree
         switch (rootNode.GetState())
         {
             case Node.NodeState.Success:
-                Debug.Log("Success");
+                //Debug.Log("Success");
                 Ready();
                 break;
             case Node.NodeState.Failure:
-                Debug.Log("Failure");
+                //Debug.Log("Failure");
                 MeshRenderer renderer = GetComponent<MeshRenderer>();
                 renderer.material.color = Color.red;
                 break;
             case Node.NodeState.Running:
-                Debug.Log("Running");
+                //Debug.Log("Running");
                 break;
             default:
-                Debug.Log("Unknown state");
+                //Debug.Log("Unknown state");
                 break;
         }
-        Debug.Log(waitingTime);
+        //Debug.Log(waitingTime);
     }
 
     protected override bool Ready()
     {
         if(!rootNode.Ready())
             throw new System.Exception("Root node not ready");
-        Debug.Log("Ready");
+        //Debug.Log("Ready");
         waitingTime = paceDelay;
         currentCorner %= 4;
         return true;
@@ -105,7 +105,7 @@ public class EnemyTree : BehaviorTree
         // return Success if agent reaches corner, Failure if player detected within radius
         if (paceNode.GetState() == Node.NodeState.Success)
         {
-            Debug.Log("Paced");
+            //Debug.Log("Paced");
             return Node.NodeState.Success;
         }
         if (paceNode.GetState() == Node.NodeState.Ready)
@@ -119,7 +119,7 @@ public class EnemyTree : BehaviorTree
             return Node.NodeState.Running;
         }
 
-        Debug.Log("reached corner: " + currentCorner + 1);
+        //Debug.Log("reached corner: " + currentCorner + 1);
         
             currentCorner++;
         return Node.NodeState.Success;
@@ -138,7 +138,7 @@ public class EnemyTree : BehaviorTree
                 yield return null;
             }
             
-            Debug.Log("reached corner: " + i + 1);
+            //Debug.Log("reached corner: " + i + 1);
         }
         
     }
