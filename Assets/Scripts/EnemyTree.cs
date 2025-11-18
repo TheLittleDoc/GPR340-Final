@@ -11,6 +11,7 @@ public class EnemyTree : BehaviorTree
 {
     NavMeshAgent agent;
     [SerializeField] private double paceDelay = 3.0;
+    [SerializeField] private double detectionRadius = 5.0;
     private double waitingTime = 3.0;
     private ActionNode paceNode;
     private ActionNode waitNode;
@@ -42,27 +43,6 @@ public class EnemyTree : BehaviorTree
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    private Node.NodeState WaitToPace()
-    {
-        if(waitingTime > 0.0)
-        {
-            waitingTime -= Time.deltaTime;
-            return Node.NodeState.Running;
-        }
-
-        waitingTime = paceDelay;
-        return Node.NodeState.Success;
-        
-        
-    }
-
-    private Node.NodeState CheckForPlayer()
-    {   
-        double distance = Vector3.Distance(player.transform.position, transform.position);
-        if(distance < 20)
-            return Node.NodeState.Failure;
-        return Node.NodeState.Success;
-    }
 
 
     // Start is called before the first frame update
@@ -113,11 +93,17 @@ public class EnemyTree : BehaviorTree
             agent.SetDestination(areaCorners[currentCorner]);
         }
 
-        if (agent.pathPending || agent.remainingDistance > 2.0f)
+        if (agent.pathPending || agent.remainingDistance > 1.0f)
         {
-            
+            double distance = Vector3.Distance(player.transform.position, transform.position) * 0.75;
+            if(distance < detectionRadius)
+            {
+                agent.SetDestination(transform.position + (agent.velocity * 0.3f));
+            }
             return Node.NodeState.Running;
         }
+        
+        
 
         //Debug.Log("reached corner: " + currentCorner + 1);
         
@@ -127,19 +113,26 @@ public class EnemyTree : BehaviorTree
     }
     
     
-    private IEnumerator pace(NavMeshAgent agent, List<Vector3> corners)
+    private Node.NodeState WaitToPace()
     {
-        for (int i = 0; i < corners.Count; i++)
+        if(waitingTime > 0.0)
         {
-            agent.SetDestination(corners[i]);
-
-            while (agent.pathPending || agent.remainingDistance > 2.0f)
-            {
-                yield return null;
-            }
-            
-            //Debug.Log("reached corner: " + i + 1);
+            waitingTime -= Time.deltaTime;
+            return Node.NodeState.Running;
         }
+
+        waitingTime = paceDelay;
+        return Node.NodeState.Success;
+        
         
     }
+
+    private Node.NodeState CheckForPlayer()
+    {   
+        double distance = Vector3.Distance(player.transform.position, transform.position);
+        if(distance < detectionRadius)
+            return Node.NodeState.Failure;
+        return Node.NodeState.Success;
+    }
+    
 }
