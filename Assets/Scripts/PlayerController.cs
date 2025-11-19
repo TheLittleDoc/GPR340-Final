@@ -1,42 +1,68 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private float speed = 5f;
+    [SerializeField] private float mouseSensitivity = 2f;
 
-    public float movementSpeed = 1.0f;
+    [SerializeField] private Transform cameraTransform;
 
-    void Start()
+    private Rigidbody rb;
+
+    private float verticalLook = 0f;
+
+    private float horizontalInput;
+    private float verticalInput;
+
+    private float mouseX;
+    private float mouseY;
+
+    private void Start()
     {
-
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
-    void Update()
+    private void Update()
     {
+        GetInput();
+        HandleLook();
+    }
 
-        Rigidbody rigidbody = GetComponent<Rigidbody>();
+    private void FixedUpdate()
+    {
+        MovePlayer();
+    }
 
-        if (Input.GetKey(KeyCode.W))
-        {
-            rigidbody.position += Vector3.forward * Time.deltaTime * movementSpeed;
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            rigidbody.position += Vector3.back * Time.deltaTime * movementSpeed;
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            rigidbody.position += Vector3.left * Time.deltaTime * movementSpeed;
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            rigidbody.position += Vector3.right * Time.deltaTime * movementSpeed;
-        }
-        // else if (Input.GetKey(KeyCode.Space))
-        // {
-        //     rigidbody.position += Vector3.
-        // }
+    private void GetInput()
+    {
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
+
+        mouseX = Input.GetAxisRaw("Mouse X") * mouseSensitivity;
+        mouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
+    }
+
+    private void HandleLook()
+    {
+        // Horizontal rotation (player)
+        transform.Rotate(Vector3.up * mouseX);
+
+        // Vertical rotation (camera only)
+        verticalLook -= mouseY;
+        verticalLook = Mathf.Clamp(verticalLook, -90f, 90f);
+        cameraTransform.localRotation = Quaternion.Euler(verticalLook, 0f, 0f);
+    }
+
+    private void MovePlayer()
+    {
+        Vector3 move = transform.forward * verticalInput + transform.right * horizontalInput;
+        move.y = 0f;
+        move.Normalize();
+
+        rb.MovePosition(rb.position + move * speed * Time.deltaTime);
     }
 }
