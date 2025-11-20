@@ -7,8 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    private TextMeshProUGUI healthText;
-    private TextMeshProUGUI timerText;
+    //private TextMeshProUGUI healthText;
+    //private TextMeshProUGUI timerText;
     private int timeAlive;
     public void loadScene(string sceneName)
     {
@@ -28,11 +28,11 @@ public class UIManager : MonoBehaviour
     private void FixedUpdate()
     {
         timeAlive++;
-        timerText.text = "Time Alive: " + timeAlive;
+        //timerText.text = "Time Alive: " + timeAlive;
     }
 
     public void updateHealth()
     {
-        healthText.text = "Player Health: ";
+        //healthText.text = "Player Health: ";
     }
 }
