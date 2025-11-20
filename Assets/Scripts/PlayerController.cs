@@ -3,10 +3,17 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
+    [Header("Movement")]
     [SerializeField] private float speed = 5f;
     [SerializeField] private float mouseSensitivity = 2f;
-
     [SerializeField] private Transform cameraTransform;
+
+    [Header("Player Data")] 
+    [SerializeField] private float maxHealth = 20f;
+    private float currentHealth;
+
+    [SerializeField] private UIManager uiManager;
+    
 
     private Rigidbody rb;
 
@@ -24,6 +31,9 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        
+        currentHealth = maxHealth;
+        uiManager.setMaxHealth(maxHealth);
     }
 
     private void Update()
@@ -65,4 +75,34 @@ public class PlayerController : MonoBehaviour
 
         rb.MovePosition(rb.position + move * speed * Time.deltaTime);
     }
+    
+    public void takeDamage(float damage) 
+    { 
+        currentHealth -= damage; 
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); 
+        uiManager.setHealth(currentHealth);
+        Debug.Log("Player Health: " + currentHealth); 
+        if(currentHealth <= 0) 
+        { 
+            die(); 
+        } 
+    } 
+    public void heal(float amount) 
+    { 
+        currentHealth += amount; 
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); 
+        uiManager.setHealth(currentHealth);
+         
+    } 
+    private void die() {  
+        Destroy(gameObject); 
+    } 
+    public float getCurrentHealth() 
+    { 
+        return currentHealth; 
+    } 
+    public float getHealthPercentage() 
+    { 
+        return currentHealth / maxHealth; 
+    } 
 }

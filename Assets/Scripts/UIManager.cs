@@ -9,6 +9,15 @@ public class UIManager : MonoBehaviour
 {
     //private TextMeshProUGUI healthText;
     //private TextMeshProUGUI timerText;
+    
+    [SerializeField] private RectTransform healthBar;
+        
+    [SerializeField] private float maxHealth;
+    private float currentHealth = 20f;
+
+    [SerializeField] private float width, height;
+    
+    
     private int timeAlive;
     public void loadScene(string sceneName)
     {
@@ -31,8 +40,17 @@ public class UIManager : MonoBehaviour
         //timerText.text = "Time Alive: " + timeAlive;
     }
 
-    public void updateHealth()
+    public void setMaxHealth(float maxHealth)
     {
-        //healthText.text = "Player Health: ";
+        this.maxHealth = maxHealth;
+    }
+
+    public void setHealth(float health)
+    {
+        currentHealth = health;
+            
+        float newWidth = (health / maxHealth) * width;
+            
+        healthBar.sizeDelta = new Vector2(newWidth, height);
     }
 }
