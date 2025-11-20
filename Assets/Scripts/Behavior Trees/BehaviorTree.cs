@@ -14,4 +14,8 @@ public class BehaviorTree : MonoBehaviour
 
     protected virtual bool Ready() { return true; }
 
+    public virtual void SetCorners(List<Vector3> corners)
+    {
+        
+    }
 }

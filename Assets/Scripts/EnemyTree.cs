@@ -22,9 +22,16 @@ public class EnemyTree : BehaviorTree
     [SerializeField] private List<Vector3> areaCorners; 
     GameObject player;
 
+    private bool ccw = false;
 
     public void Start()
     {
+        
+        if (UnityEngine.Random.Range(0, 2) == 0)
+        {
+            Debug.Log("Counterclockwise");
+            ccw = true;
+        }
         agent = GetComponent<NavMeshAgent>();
         ActionNode.ActionNodeDelegate pace = Pace;
         paceNode = new ActionNode(pace);
@@ -92,22 +99,29 @@ public class EnemyTree : BehaviorTree
         {
             agent.SetDestination(areaCorners[currentCorner]);
         }
-
+        double distance = Vector3.Distance(player.transform.position, transform.position) * 1.25;
         if (agent.pathPending || agent.remainingDistance > 1.0f)
         {
-            double distance = Vector3.Distance(player.transform.position, transform.position) * 0.75;
+            
             if(distance < detectionRadius)
             {
-                agent.SetDestination(transform.position + (agent.velocity * 0.3f));
+                Debug.Log(distance);
+                agent.SetDestination(transform.position + (agent.velocity.normalized));
+                
             }
+            MeshRenderer renderer = GetComponent<MeshRenderer>();
+            renderer.material.color = Color.green;
             return Node.NodeState.Running;
         }
         
         
 
         //Debug.Log("reached corner: " + currentCorner + 1);
-        
-            currentCorner++;
+        if(distance > detectionRadius)
+        {
+            currentCorner = ccw ? (currentCorner + 1) % 4 : (currentCorner + 3) % 4;
+                
+        }
         return Node.NodeState.Success;
 
     }
@@ -115,6 +129,12 @@ public class EnemyTree : BehaviorTree
     
     private Node.NodeState WaitToPace()
     {
+        if(waitNode.GetState() == Node.NodeState.Ready)
+        {
+            Debug.Log("WaitToPace");
+            StartCoroutine(LookLeftAndRight());
+        }
+        
         if(waitingTime > 0.0)
         {
             waitingTime -= Time.deltaTime;
@@ -134,5 +154,72 @@ public class EnemyTree : BehaviorTree
             return Node.NodeState.Failure;
         return Node.NodeState.Success;
     }
+
+    private IEnumerator LookLeftAndRight()
+    {
+        // add a left and right rotation over time
+        Quaternion initialRotation = transform.rotation;
+        Quaternion leftRotation = Quaternion.Euler(initialRotation.eulerAngles.x, initialRotation.eulerAngles.y - 30f, initialRotation.eulerAngles.z);
+        Quaternion rightRotation = Quaternion.Euler(initialRotation.eulerAngles.x, initialRotation.eulerAngles.y + 30f, initialRotation.eulerAngles.z);
+
+        float t = 0.0f;
+        float thirdTime = (float)waitingTime / 3.0f;
+        float timeElapsed = 0.0f;
+        while (timeElapsed < thirdTime)
+        {
+            transform.rotation = Quaternion.Slerp(initialRotation, leftRotation, t);
+            timeElapsed += Time.deltaTime;
+            t = timeElapsed / thirdTime;
+            yield return null;
+            
+        }
+
+        t = 0.0f;
+        timeElapsed = 0.0f;
+        while (timeElapsed < thirdTime)
+        {
+            transform.rotation = Quaternion.Slerp(leftRotation, rightRotation, t);
+            timeElapsed += Time.deltaTime;
+            t = timeElapsed / thirdTime;
+            yield return null;
+
+        }
+
+        t = 0.0f;
+        timeElapsed = 0.0f;
+        while (timeElapsed < thirdTime)
+        {
+            transform.rotation = Quaternion.Slerp(rightRotation, initialRotation, t);
+            timeElapsed += Time.deltaTime;
+            t = timeElapsed / thirdTime;
+            yield return null;
+
+        }
+        yield return null;
+    }
     
+    public enum EnemyState
+    {
+        Patrolling,
+        Chasing,
+        Searching,
+        Attacking,
+        Spotted
+    }
+
+    public EnemyState GetState()
+    {
+        if (paceNode.GetState() == Node.NodeState.Running)
+            return EnemyState.Patrolling;
+        if (searchNode.GetState() == Node.NodeState.Failure)
+            return EnemyState.Spotted;
+        if (waitNode.GetState() == Node.NodeState.Running)
+            return EnemyState.Searching;
+        return EnemyState.Patrolling;
+    }
+    
+    public override void SetCorners(List<Vector3> corners)
+    {
+        areaCorners = corners;
+    }
 }
