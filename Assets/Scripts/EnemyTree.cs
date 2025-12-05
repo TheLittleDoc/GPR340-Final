@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using BehaviorTrees;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Video;
+using Sequence = BehaviorTrees.Sequence;
 
 public class EnemyTree : BehaviorTree
 {
@@ -26,11 +29,15 @@ public class EnemyTree : BehaviorTree
     [SerializeField] private List<Vector3> areaCorners; 
     GameObject player;
 
+    private TMP_Text debugLabel;
+    private GameObject debugCanvas;
+
     private bool ccw = false;
 
     public void Start()
     {
-        
+        debugLabel = transform.GetComponentInChildren<TMP_Text>();
+        debugCanvas = transform.GetChild(1).gameObject;
         if (UnityEngine.Random.Range(0, 2) == 0)
         {
             Debug.Log("Counterclockwise");
@@ -71,7 +78,9 @@ public class EnemyTree : BehaviorTree
     // Start is called before the first frame update
     public void FixedUpdate()
     {
-       rootNode.Evaluate();
+        
+        rootNode.Evaluate();
+        DrawTMPLabelsDebug();
         switch (rootNode.GetState())
         {
             case Node.NodeState.Success:
@@ -216,6 +225,11 @@ public class EnemyTree : BehaviorTree
             // Do nothing
         }
         #endif
+    }
+
+    public void DrawTMPLabelsDebug()
+    {
+        debugLabel.text = GetState().ToString();
     }
     
     private Node.NodeState AttackPlayer()
