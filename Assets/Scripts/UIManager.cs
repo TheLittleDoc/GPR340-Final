@@ -49,7 +49,7 @@ public class UIManager : MonoBehaviour
     {
         currentHealth = health;
             
-        float newWidth = (health / maxHealth) * width;
+        float newWidth = ((maxHealth - currentHealth) / maxHealth) * width;
             
         healthBar.sizeDelta = new Vector2(newWidth, height);
     }
