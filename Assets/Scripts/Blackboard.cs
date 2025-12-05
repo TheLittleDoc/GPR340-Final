@@ -7,6 +7,8 @@ public class Blackboard : MonoBehaviour
 {
     private Vector3 playerPosition;
     private static Blackboard blackboard;
+    
+    
 
     private float health;
 
