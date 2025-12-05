@@ -218,7 +218,7 @@ public class EnemyTree : BehaviorTree
         return EnemyState.Patrolling;
     }
     
-    public override void SetCorners(List<Vector3> corners)
+    public void SetCorners(List<Vector3> corners)
     {
         areaCorners = corners;
     }

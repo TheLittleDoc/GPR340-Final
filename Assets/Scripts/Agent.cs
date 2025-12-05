@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using StateMachines;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,6 +9,7 @@ public struct Agent
 {
     public NavMeshAgent agent;
     public BehaviorTree behaviorTree;
+    StateMachineController stateMachineController;
 
     public void SetPacePoints(List<Vector3> corners)
     {
