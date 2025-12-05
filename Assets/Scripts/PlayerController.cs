@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
         rb.MovePosition(rb.position + move * speed * Time.deltaTime);
     }
     
-    public void takeDamage(float damage) 
+    public void TakeDamage(float damage) 
     { 
         currentHealth -= damage; 
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); 
@@ -84,24 +84,24 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Player Health: " + currentHealth); 
         if(currentHealth <= 0) 
         { 
-            die(); 
+            Die(); 
         } 
     } 
-    public void heal(float amount) 
+    public void Heal(float amount) 
     { 
         currentHealth += amount; 
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); 
         uiManager.setHealth(currentHealth);
          
     } 
-    private void die() {  
+    private void Die() {  
         Destroy(gameObject); 
     } 
-    public float getCurrentHealth() 
+    public float GetCurrentHealth() 
     { 
         return currentHealth; 
     } 
-    public float getHealthPercentage() 
+    public float GetHealthPercentage() 
     { 
         return currentHealth / maxHealth; 
     } 

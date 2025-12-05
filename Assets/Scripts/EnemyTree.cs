@@ -16,9 +16,13 @@ public class EnemyTree : BehaviorTree
     private ActionNode paceNode;
     private ActionNode waitNode;
     private ActionNode searchNode;
+    private ActionNode chaseNode;
+    private ActionNode attackNode;
     private int currentCorner = 0;
     private Sequence paceSequence;
     private Sequence foundSequence;
+    private Sequence chaseSequence;
+    private Selector rootSelector;
     [SerializeField] private List<Vector3> areaCorners; 
     GameObject player;
 
@@ -39,12 +43,24 @@ public class EnemyTree : BehaviorTree
         waitNode = new ActionNode(wait);
         ActionNode.ActionNodeDelegate search = CheckForPlayer;
         searchNode = new ActionNode(search);
+        ActionNode.ActionNodeDelegate chase = ChasePlayer;
+        chaseNode = new ActionNode(chase);
+        ActionNode.ActionNodeDelegate attack = AttackPlayer;
+        attackNode = new ActionNode(attack);
+        List<Node> chaseNodes = new List<Node>();
+        chaseNodes.Add(chaseNode);
+        chaseNodes.Add(attackNode);
+        chaseSequence = new Sequence(chaseNodes);
         List<Node> nodes = new List<Node>();
         nodes.Add(paceNode);
         nodes.Add(waitNode);
         nodes.Add(searchNode);
         paceSequence = new Sequence(nodes);
-        rootNode = paceSequence;
+        List<Node> rootNodes = new List<Node>();
+        rootNodes.Add(paceSequence);
+        rootNodes.Add(chaseSequence);
+        rootSelector = new Selector(rootNodes);
+        rootNode = rootSelector;
         
         Ready();
         player = GameObject.FindGameObjectWithTag("Player");
@@ -154,6 +170,66 @@ public class EnemyTree : BehaviorTree
             return Node.NodeState.Failure;
         return Node.NodeState.Success;
     }
+    
+    private Node.NodeState ChasePlayer()
+    {
+        if (paceNode.GetState() == Node.NodeState.Success)
+        {
+            //Debug.Log("Chased");
+            return Node.NodeState.Success;
+        }
+        double distance = Vector3.Distance(player.transform.position, transform.position); 
+        if(distance > detectionRadius)
+        {
+            return Node.NodeState.Failure;
+        }
+        
+        if (distance < (detectionRadius / 10f))
+        {
+            return Node.NodeState.Success;
+        }
+
+        agent.SetDestination(player.transform.position);
+        return Node.NodeState.Running;
+    }
+
+    public void OnDrawGizmos()
+    {
+        // Add text label above enemy to show state
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, (float)detectionRadius);
+        #if UNITY_EDITOR
+        GUIStyle style = new GUIStyle();
+        style.normal.textColor = Color.white;
+        style.normal.background = Texture2D.grayTexture;
+        //center text
+        style.alignment = TextAnchor.MiddleCenter;
+        style.fontSize = 12;
+        try
+        {
+            Handles.Label(transform.position + Vector3.up * 2, GetState().ToString(), style);
+            // center label
+            
+        }
+        catch (Exception e)
+        {
+            // Do nothing
+        }
+        #endif
+    }
+    
+    private Node.NodeState AttackPlayer()
+    {
+        // Attack player
+        player.GetComponent<PlayerController>().TakeDamage(5f);
+        return Node.NodeState.Success;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        // Enemy takes damage
+        Debug.Log("Enemy took " + damage + " damage!");
+    }
 
     private IEnumerator LookLeftAndRight()
     {
@@ -206,6 +282,7 @@ public class EnemyTree : BehaviorTree
         Attacking,
         Spotted
     }
+    
 
     public EnemyState GetState()
     {
@@ -215,6 +292,10 @@ public class EnemyTree : BehaviorTree
             return EnemyState.Spotted;
         if (waitNode.GetState() == Node.NodeState.Running)
             return EnemyState.Searching;
+        if (chaseNode.GetState() == Node.NodeState.Running)
+            return EnemyState.Chasing;
+        if (attackNode.GetState() == Node.NodeState.Running)
+            return EnemyState.Attacking;
         return EnemyState.Patrolling;
     }
     
