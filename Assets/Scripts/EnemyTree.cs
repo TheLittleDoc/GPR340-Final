@@ -20,7 +20,7 @@ public class EnemyTree : BehaviorTree
     private Sequence paceSequence;
     private Sequence foundSequence;
     [SerializeField] private List<Vector3> areaCorners; 
-    GameObject player;
+    //GameObject player;
 
     private bool ccw = false;
 
@@ -47,7 +47,7 @@ public class EnemyTree : BehaviorTree
         rootNode = paceSequence;
         
         Ready();
-        player = GameObject.FindGameObjectWithTag("Player");
+        //player = GameObject.FindGameObjectWithTag("Player");
     }
 
 
@@ -99,7 +99,7 @@ public class EnemyTree : BehaviorTree
         {
             agent.SetDestination(areaCorners[currentCorner]);
         }
-        double distance = Vector3.Distance(player.transform.position, transform.position) * 1.25;
+        double distance = Vector3.Distance(Blackboard.instance.getPlayerPosition(), transform.position) * 1.25;
         if (agent.pathPending || agent.remainingDistance > 1.0f)
         {
             
@@ -149,7 +149,7 @@ public class EnemyTree : BehaviorTree
 
     private Node.NodeState CheckForPlayer()
     {   
-        double distance = Vector3.Distance(player.transform.position, transform.position);
+        double distance = Vector3.Distance(Blackboard.instance.getPlayerPosition(), transform.position);
         if(distance < detectionRadius)
             return Node.NodeState.Failure;
         return Node.NodeState.Success;

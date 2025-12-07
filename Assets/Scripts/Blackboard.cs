@@ -3,19 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Blackboard : MonoBehaviour
+public class Blackboard
 {
     private Vector3 playerPosition;
     private static Blackboard blackboard;
-    
-    
-
     private float health;
-
-    private void Awake()
-    {
-        blackboard = this;
-    }
+    private List<GameObject> enemies =  new List<GameObject>();
+    
+    private Blackboard() {}
 
     public static Blackboard instance
     {
@@ -55,4 +50,13 @@ public class Blackboard : MonoBehaviour
     {
         return playerPosition;
     }
+
+    public GameObject getEnemyPosition(int index)
+    {
+        return enemies[index];
+    }
+
+    public void addEnemy(GameObject enemy) => enemies.Add(enemy);
+
+    public void removeEnemy(int index) => enemies.RemoveAt(index);
 }
