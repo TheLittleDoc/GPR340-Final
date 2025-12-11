@@ -8,9 +8,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed = 5f;
     [SerializeField] private float mouseSensitivity = 2f;
     [SerializeField] private Transform cameraTransform;
+    
 
     [Header("Player Data")] 
     [SerializeField] private float maxHealth = 20f;
+
+    [SerializeField] private Camera camera;
     private float currentHealth;
 
     [Header("UI")]
@@ -43,6 +46,7 @@ public class PlayerController : MonoBehaviour
     {
         GetInput();
         HandleLook();
+        attackEnemy();
     }
 
     private void FixedUpdate()
@@ -91,7 +95,7 @@ public class PlayerController : MonoBehaviour
         } 
     } 
     public void Heal(float amount) 
-    { 
+    {
         currentHealth += amount; 
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); 
         uiManager.setHealth(currentHealth);
@@ -107,8 +111,29 @@ public class PlayerController : MonoBehaviour
     { 
         return currentHealth; 
     } 
+    
     public float GetHealthPercentage() 
     { 
         return currentHealth / maxHealth; 
-    } 
+    }
+
+    private void attackEnemy()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.CompareTag("Enemy"))
+                {
+                    if (Vector3.Distance(transform.position, hit.point) < 5.0f)
+                    {
+                        Destroy(hit.collider.gameObject);
+                    }
+                }
+            }
+        }
+    }
 }

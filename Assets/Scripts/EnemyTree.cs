@@ -38,7 +38,8 @@ public class EnemyTree : BehaviorTree
 
     public void Start()
     {
-        gameManager = GameManager.gameManager;
+        
+        gameManager = GameManager.gameManager; //this is returning null for some reason
         gameManager.blackboard.addEnemy(gameObject);
         debugLabel = transform.GetComponentInChildren<TMP_Text>();
         debugCanvas = transform.GetChild(1).gameObject;
