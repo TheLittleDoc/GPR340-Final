@@ -9,6 +9,8 @@ public class UIManager : MonoBehaviour
 {
     //private TextMeshProUGUI healthText;
     //private TextMeshProUGUI timerText;
+    // Blackboard position status
+    [SerializeField] private TMP_Text playerPosition;
     
     [SerializeField] private RectTransform healthBar;
         
@@ -38,6 +40,9 @@ public class UIManager : MonoBehaviour
     {
         timeAlive++;
         //timerText.text = "Time Alive: " + timeAlive;
+        var position = transform.GetComponent<GameManager>().getBlackboard().getPlayerPosition();
+        var posText = "("+position.x + "," + position.y + "," + position.z + ")";
+        playerPosition.text = posText;
     }
 
     public void setMaxHealth(float maxHealth)

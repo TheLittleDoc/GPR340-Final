@@ -5,7 +5,9 @@ using UnityEngine;
 
 public class Blackboard
 {
+    [SerializeField]
     private Vector3 playerPosition;
+    private Vector3 lastPlayerPosition;
     private static Blackboard blackboard;
     private float health;
     private List<GameObject> enemies =  new List<GameObject>();
@@ -59,4 +61,17 @@ public class Blackboard
     public void addEnemy(GameObject enemy) => enemies.Add(enemy);
 
     public void removeEnemy(int index) => enemies.RemoveAt(index);
+
+    public void Update()
+    {
+        if (playerPosition != lastPlayerPosition)
+        {
+            foreach (GameObject enemy in enemies)
+            {
+                enemy.GetComponent<EnemyTree>().PositionUpdate(playerPosition);
+            }
+            lastPlayerPosition = playerPosition;
+        }
+        
+    }
 }

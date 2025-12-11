@@ -27,7 +27,9 @@ public class EnemyTree : BehaviorTree
     private Sequence chaseSequence;
     private Selector rootSelector;
     [SerializeField] private List<Vector3> areaCorners; 
-    //GameObject player;
+    GameObject player;
+    private Vector3 reportedPosition = Vector3.zero;
+    GameManager gameManager;
 
     private TMP_Text debugLabel;
     private GameObject debugCanvas;
@@ -36,6 +38,8 @@ public class EnemyTree : BehaviorTree
 
     public void Start()
     {
+        gameManager = GameManager.gameManager;
+        gameManager.blackboard.addEnemy(gameObject);
         debugLabel = transform.GetComponentInChildren<TMP_Text>();
         debugCanvas = transform.GetChild(1).gameObject;
         if (UnityEngine.Random.Range(0, 2) == 0)
@@ -70,7 +74,7 @@ public class EnemyTree : BehaviorTree
         rootNode = rootSelector;
         
         Ready();
-        //player = GameObject.FindGameObjectWithTag("Player");
+        player = GameObject.FindGameObjectWithTag("Player");
     }
 
 
@@ -78,7 +82,10 @@ public class EnemyTree : BehaviorTree
     // Start is called before the first frame update
     public void FixedUpdate()
     {
-        
+        if (Vector3.Distance(reportedPosition, transform.position) < (detectionRadius * 3.0f) && reportedPosition.magnitude > 0)
+        {
+            Debug.Log("Within Range to be sought");
+        }
         rootNode.Evaluate();
         DrawTMPLabelsDebug();
         switch (rootNode.GetState())
@@ -174,9 +181,12 @@ public class EnemyTree : BehaviorTree
 
     private Node.NodeState CheckForPlayer()
     {   
-        double distance = Vector3.Distance(Blackboard.instance.getPlayerPosition(), transform.position);
+        double distance = Vector3.Distance(player.transform.position, transform.position);
         if(distance < detectionRadius)
+        {
+            gameManager.ReportPosition(player.transform.position);
             return Node.NodeState.Failure;
+        }
         return Node.NodeState.Success;
     }
     
@@ -316,5 +326,11 @@ public class EnemyTree : BehaviorTree
     public void SetCorners(List<Vector3> corners)
     {
         areaCorners = corners;
+    }
+
+    public void PositionUpdate(Vector3 position)
+    {
+            reportedPosition = position;
+        
     }
 }

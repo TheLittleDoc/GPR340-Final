@@ -40,7 +40,6 @@ public class PlayerController : MonoBehaviour
     {
         GetInput();
         HandleLook();
-        Blackboard.instance.setPlayerPosition(transform.position);
     }
 
     private void FixedUpdate()
