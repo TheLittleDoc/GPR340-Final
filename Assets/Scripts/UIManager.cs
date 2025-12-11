@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,9 +11,9 @@ public class UIManager : MonoBehaviour
     //private TextMeshProUGUI healthText;
     //private TextMeshProUGUI timerText;
     // Blackboard position status
-    [SerializeField] private TMP_Text playerPosition;
+    [SerializeField] [CanBeNull] private TMP_Text playerPosition;
     
-    [SerializeField] private RectTransform healthBar;
+    [SerializeField] [CanBeNull] private RectTransform healthBar;
         
     [SerializeField] private float maxHealth;
     private float currentHealth = 20f;
@@ -40,9 +41,12 @@ public class UIManager : MonoBehaviour
     {
         timeAlive++;
         //timerText.text = "Time Alive: " + timeAlive;
-        var position = transform.GetComponent<GameManager>().getBlackboard().getPlayerPosition();
-        var posText = "("+position.x + "," + position.y + "," + position.z + ")";
-        playerPosition.text = posText;
+        if (transform.TryGetComponent(out GameManager gameManager))
+        {
+            var position = transform.GetComponent<GameManager>().getBlackboard().getPlayerPosition();
+            var posText = "("+position.x + "," + position.y + "," + position.z + ")";
+            playerPosition.text = posText;
+        }
     }
 
     public void setMaxHealth(float maxHealth)

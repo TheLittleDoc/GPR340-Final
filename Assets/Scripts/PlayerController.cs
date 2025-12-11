@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -12,7 +13,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float maxHealth = 20f;
     private float currentHealth;
 
+    [Header("UI")]
     [SerializeField] private UIManager uiManager;
+    
     
 
     private Rigidbody rb;
@@ -94,8 +97,11 @@ public class PlayerController : MonoBehaviour
         uiManager.setHealth(currentHealth);
          
     } 
-    private void Die() {  
-        Destroy(gameObject); 
+    private void Die()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        uiManager.loadScene("DeadScene");
     } 
     public float GetCurrentHealth() 
     { 
