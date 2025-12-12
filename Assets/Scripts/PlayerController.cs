@@ -131,6 +131,7 @@ public class PlayerController : MonoBehaviour
                     if (Vector3.Distance(transform.position, hit.point) < 5.0f)
                     {
                         Destroy(hit.collider.gameObject);
+                        GameManager.gameManager.blackboard.removeEnemy(hit.collider.gameObject);
                     }
                 }
             }

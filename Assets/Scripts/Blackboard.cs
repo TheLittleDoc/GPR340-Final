@@ -11,6 +11,7 @@ public class Blackboard
     private static Blackboard blackboard;
     private float health;
     private List<GameObject> enemies =  new List<GameObject>();
+    private UIManager uIManager;
     
     private Blackboard() {}
 
@@ -60,7 +61,13 @@ public class Blackboard
 
     public void addEnemy(GameObject enemy) => enemies.Add(enemy);
 
-    public void removeEnemy(int index) => enemies.RemoveAt(index);
+    public void removeEnemy(GameObject enemy)
+    {
+        if (enemies.Contains(enemy))
+        {
+            enemies.Remove(enemy);
+        }
+    }
 
     public void Update()
     {
@@ -72,6 +79,10 @@ public class Blackboard
             }
             lastPlayerPosition = playerPosition;
         }
-        
+    }
+
+    public List<GameObject> getEnemies()
+    {
+        return enemies;
     }
 }

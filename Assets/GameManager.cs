@@ -5,9 +5,10 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager gameManager;
+    [SerializeField] private UIManager ui;
     public Blackboard blackboard;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         if(gameManager == null)
             gameManager = this;
@@ -20,6 +21,12 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         blackboard.Update();
+        if (blackboard.getEnemies().Count == 0)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            ui.loadScene("YouWin");
+        }
         
     }
 
