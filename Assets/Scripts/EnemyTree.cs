@@ -132,7 +132,7 @@ public class EnemyTree : BehaviorTree
         {
             agent.SetDestination(areaCorners[currentCorner]);
         }
-        double distance = Vector3.Distance(Blackboard.instance.getPlayerPosition(), transform.position) * 1.25;
+        double distance = Vector3.Distance(player.transform.position, transform.position) * 1.25;
         if (agent.pathPending || agent.remainingDistance > 1.0f)
         {
             
